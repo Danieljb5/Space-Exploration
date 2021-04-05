@@ -1,8 +1,11 @@
 #include <SFML/Graphics.hpp>
+#include "renderer.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Space Exploration", sf::Style::Fullscreen | sf::Style::Resize);
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Space Exploration", sf::Style::Fullscreen);
+	Renderer renderer;
+	renderer.addSprite("assets/testIcon.png");
 
 	while(window.isOpen())
 	{
@@ -13,8 +16,7 @@ int main()
 				window.close();
 		}
 
-		window.clear();
-		window.display();
+		renderer.render(window);
 	}
 
 	return 0;

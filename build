@@ -1,7 +1,9 @@
 #!/bin/bash
-g++ -c src/main.cpp
-g++ -O main.o -o "Space Exploration" -lsfml-graphics -lsfml-window -lsfml-system
+SRCDIR=src
+SRCS=$(find $SRCDIR -name *.cpp)
+g++ -c $SRCS -I src -I src/headers
+g++ -O *.o -o "Space Exploration" -I src/source -I src/headers -lsfml-graphics -lsfml-window -lsfml-system
 mkdir out
 mv "Space Exploration" out
-rm main.o
+rm *.o
 cp assets out -r
