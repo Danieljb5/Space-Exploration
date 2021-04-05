@@ -1,18 +1,21 @@
-#include <simple2d.h>
-#include <libpng16/png.h>
-
-void render()
-{
-	S2D_DrawTriangle(
-        320, 50, 1, 0, 0, 1, 
-        540, 430, 0, 1, 0, 1, 
-        100, 430, 0, 0, 1, 1);
-}
+#include <SFML/Graphics.hpp>
 
 int main()
 {
-	S2D_Window *window = S2D_CreateWindow("Test", 1920, 1080, NULL, render, S2D_FULLSCREEN | S2D_RESIZABLE);
-	S2D_SetIcon(window, "assets/testIcon.png"); //not working
-	S2D_Show(window);
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Space Exploration", sf::Style::Fullscreen | sf::Style::Resize);
+
+	while(window.isOpen())
+	{
+		sf::Event event;
+		while(window.pollEvent(event))
+		{
+			if(event.type == sf::Event::Closed)
+				window.close();
+		}
+
+		window.clear();
+		window.display();
+	}
+
 	return 0;
 }

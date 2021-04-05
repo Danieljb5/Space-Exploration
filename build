@@ -1,5 +1,7 @@
 #!/bin/bash
-simple2d build src/main.cpp
+g++ -c src/main.cpp
+g++ -O main.o -o "Space Exploration" -lsfml-graphics -lsfml-window -lsfml-system
 mkdir out
-mv src/main out/"Space Exploration"
+mv "Space Exploration" out
+rm main.o
 cp assets out -r
