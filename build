@@ -1,0 +1,5 @@
+#!/bin/bash
+simple2d build src/main.cpp
+mkdir out
+mv src/main out/"Space Exploration"
+cp assets out -r
