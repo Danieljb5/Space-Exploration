@@ -1,4 +1,5 @@
 #include <simple2d.h>
+#include <libpng16/png.h>
 
 void render()
 {
@@ -11,6 +12,7 @@ void render()
 int main()
 {
 	S2D_Window *window = S2D_CreateWindow("Test", 1920, 1080, NULL, render, S2D_FULLSCREEN | S2D_RESIZABLE);
+	S2D_SetIcon(window, "assets/testIcon.png"); //not working
 	S2D_Show(window);
 	return 0;
 }
