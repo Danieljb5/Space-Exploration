@@ -1,10 +1,12 @@
 #include "game.h"
+#include <iostream>
 
-float moveSpeed = 0.5;
+float moveSpeed = 0.5f;
+float zoomSpeed = 0.0000000001f;
 
 void Game::Start()
 {
-
+    mouseWheel = 1 / zoomSpeed;
 }
 
 void Game::Update(float dt)
@@ -25,4 +27,5 @@ void Game::Update(float dt)
     {
         camera->move({-moveSpeed, 0});
     }
+    camera->setZoom(mouseWheel * zoomSpeed);
 }

@@ -2,7 +2,7 @@
 
 Camera::Camera()
 {
-
+    zoom = 1.0f;
 }
 
 Camera::~Camera()
@@ -23,6 +23,8 @@ void Camera::move(sf::Vector2f offset)
 void Camera::setZoom(float value)
 {
     zoom = value;
+    if(zoom < 0)
+        zoom = 0;
 }
 
 sf::Vector2f Camera::getPosition()

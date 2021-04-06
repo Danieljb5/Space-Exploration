@@ -28,6 +28,8 @@ int main()
 		{
 			if(event.type == sf::Event::Closed)
 				window.close();
+			if(event.type == sf::Event::MouseWheelScrolled)
+				game.MouseWheelInterrupt(event.mouseWheel.x);
 		}
 
 		sf::Time dt = clock.restart();

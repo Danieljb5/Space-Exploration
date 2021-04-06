@@ -4,8 +4,8 @@ RenderObject::RenderObject(std::string path, sf::Vector2f pos, sf::Vector2f size
 {
     id = -1;
     filepath = path;
-    pos = pos;
-    size = size;
+    position = pos;
+    scale = size;
 }
 
 RenderObject::~RenderObject()

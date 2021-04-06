@@ -23,7 +23,10 @@ void Renderer::render(sf::RenderWindow &window, Camera &camera)
         spr.setTexture(tex);
         sf::Vector2f camPos = camera.getPosition();
         camPos = {camPos.x, -camPos.y};
-        spr.setPosition(it->second.getPosition() - camPos);
+        sf::Vector2u size = tex.getSize();
+        spr.setOrigin(size.x / 2, size.y / 2);
+        spr.setPosition((it->second.getPosition() * camera.getZoom()) - camPos);
+        spr.setScale(it->second.getScale() * camera.getZoom());
         window.draw(spr);
         it++;
     }

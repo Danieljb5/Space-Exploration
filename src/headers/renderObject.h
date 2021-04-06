@@ -8,12 +8,13 @@
 class RenderObject
 {
 public:
-    RenderObject(std::string path, sf::Vector2f pos = {0.f, 0.f}, sf::Vector2f size = {10.f, 10.f});
+    RenderObject(std::string path, sf::Vector2f pos = {0.f, 0.f}, sf::Vector2f size = {1.f, 1.f});
     ~RenderObject();
 
     void setSprite(std::string path);
     void setPosition(sf::Vector2f pos);
     void setScale(sf::Vector2f size);
+    void resize(sf::Vector2f size);
     void setID(int value);
 
     RenderObject copy();

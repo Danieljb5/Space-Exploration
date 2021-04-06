@@ -14,10 +14,12 @@ public:
 
     void Start();
     void Update(float dt);
+    void MouseWheelInterrupt(float delta) { mouseWheelDelta = delta; mouseWheel += mouseWheelDelta; }
 
 private:
     Renderer* renderer;
     Camera* camera;
+    float mouseWheel = 1, mouseWheelDelta;
 };
 
 #endif
