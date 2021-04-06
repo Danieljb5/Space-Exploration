@@ -8,7 +8,6 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Space Exploration", sf::Style::Fullscreen);
-	window.setKeyRepeatEnabled(false);
 
 	Camera camera;
 	Renderer renderer;
