@@ -6,6 +6,7 @@
 #include <map>
 #include <list>
 #include "renderObject.h"
+#include "camera.h"
 
 class Renderer
 {
@@ -13,7 +14,7 @@ public:
     Renderer();
     ~Renderer();
 
-    void render(sf::RenderWindow &window);
+    void render(sf::RenderWindow &window, Camera &camera);
     void addTexture(std::string filepath);
     void removeTexture(std::string filepath);
     void addObject(RenderObject obj);

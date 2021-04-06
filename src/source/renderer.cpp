@@ -12,7 +12,7 @@ Renderer::~Renderer()
 
 }
 
-void Renderer::render(sf::RenderWindow &window)
+void Renderer::render(sf::RenderWindow &window, Camera &camera)
 {
     window.clear();
     std::map<int, RenderObject>::iterator it = objects.begin();
@@ -21,6 +21,9 @@ void Renderer::render(sf::RenderWindow &window)
         sf::Texture tex = textures.at(it->second.getFilePath());
         sf::Sprite spr;
         spr.setTexture(tex);
+        sf::Vector2f camPos = camera.getPosition();
+        camPos = {camPos.x, -camPos.y};
+        spr.setPosition(it->second.getPosition() - camPos);
         window.draw(spr);
         it++;
     }
