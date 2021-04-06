@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 #include <map>
+#include <iostream>
 #include "renderer.h"
 #include "renderObject.h"
 #include "camera.h"
@@ -8,7 +10,7 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Space Exploration", sf::Style::Fullscreen);
-
+	
 	Camera camera;
 	Renderer renderer;
 	Game game = {renderer, camera};

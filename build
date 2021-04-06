@@ -2,7 +2,7 @@
 SRCDIR=src
 SRCS=$(find $SRCDIR -name *.cpp)
 g++ -c $SRCS -I src -I src/headers
-g++ -O *.o -o "Space Exploration" -I src/source -I src/headers -lsfml-graphics -lsfml-window -lsfml-system
+g++ -O *.o -o "Space Exploration" -I src/source -I src/headers -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network
 mkdir out
 mv "Space Exploration" out
 rm *.o
