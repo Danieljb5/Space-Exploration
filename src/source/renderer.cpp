@@ -15,11 +15,12 @@ Renderer::~Renderer()
 void Renderer::render(sf::RenderWindow &window)
 {
     window.clear();
-    std::map<std::string, sf::Texture>::iterator it = textures.begin();
-    for(int i = 0; i < textures.size(); i++)
+    std::map<int, RenderObject>::iterator it = objects.begin();
+    for(int i = 0; i < objects.size(); i++)
     {
+        sf::Texture tex = textures.at(it->second.getFilePath());
         sf::Sprite spr;
-        spr.setTexture(it->second);
+        spr.setTexture(tex);
         window.draw(spr);
         it++;
     }
@@ -37,4 +38,22 @@ void Renderer::addTexture(std::string filepath)
 void Renderer::removeTexture(std::string filepath)
 {
     textures.erase(filepath);
+}
+
+void Renderer::addObject(RenderObject obj)
+{
+    bool validID = false;
+    int id = -1;
+    while(!validID)
+    {
+        int rand = random();
+        if(objects.count(rand) == 0)
+        {
+            id = rand;
+            validID = true;
+        }
+    }
+    obj.setID(id);
+    objects.insert({obj.ID(), obj});
+    addTexture(obj.getFilePath());
 }

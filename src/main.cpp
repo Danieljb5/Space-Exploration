@@ -1,11 +1,14 @@
 #include <SFML/Graphics.hpp>
+#include <map>
 #include "renderer.h"
+#include "renderObject.h"
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Space Exploration", sf::Style::Fullscreen);
 	Renderer renderer;
-	renderer.addTexture("assets/testIcon.png");
+	RenderObject obj = {"assets/testIcon.png"};
+	renderer.addObject(obj);
 
 	while(window.isOpen())
 	{

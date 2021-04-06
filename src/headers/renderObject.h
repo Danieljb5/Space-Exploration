@@ -1,0 +1,32 @@
+
+#ifndef RENDER_OBJECT_H
+#define RENDER_OBJECT_H
+
+#include <SFML/Graphics.hpp>
+#include <string>
+
+class RenderObject
+{
+public:
+    RenderObject(std::string path, sf::Vector2f pos = {0.f, 0.f}, sf::Vector2f size = {10.f, 10.f});
+    ~RenderObject();
+
+    void setSprite(std::string path);
+    void setPosition(sf::Vector2f pos);
+    void setScale(sf::Vector2f size);
+    void setID(int value);
+
+    RenderObject copy();
+    std::string getFilePath();
+    sf::Vector2f getPosition();
+    sf::Vector2f getScale();
+    int ID();
+
+private:
+    std::string filepath;
+    sf::Vector2f position;
+    sf::Vector2f scale;
+    int id = -1;
+};
+
+#endif

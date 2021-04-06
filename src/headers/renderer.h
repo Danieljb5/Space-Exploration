@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <list>
+#include "renderObject.h"
 
 class Renderer
 {
@@ -15,9 +16,13 @@ public:
     void render(sf::RenderWindow &window);
     void addTexture(std::string filepath);
     void removeTexture(std::string filepath);
+    void addObject(RenderObject obj);
+    void removeObject(int id);
+    void removeObject(RenderObject obj);
 
 private:
     std::map<std::string, sf::Texture> textures;
+    std::map<int, RenderObject> objects;
 };
 
 #endif
