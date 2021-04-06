@@ -33,8 +33,8 @@ void Renderer::addSprite(std::string filepath)
         std::cout << "Error loading image '" << filepath.c_str() << "'" << std::endl;
         return;
     }
-    sf::Sprite spr;
-    spr.setTexture(tex);
+    textures.insert({filepath, tex});
+    sf::Sprite spr(textures.at(filepath));
     spritePaths.insert({sprites.size(), filepath});
     sprites.insert({filepath, spr});
 }

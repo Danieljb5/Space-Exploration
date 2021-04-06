@@ -16,6 +16,7 @@ public:
 
 private:
     std::map<std::string, sf::Sprite> sprites;
+    std::map<std::string, sf::Texture> textures;
     std::map<int, std::string> spritePaths;
 };
 
