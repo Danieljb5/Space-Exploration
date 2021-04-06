@@ -1,9 +1,10 @@
 #include <iostream>
 #include "renderer.h"
+#include "assets.h"
 
 Renderer::Renderer()
 {
-
+    
 }
 
 Renderer::~Renderer()
@@ -14,27 +15,26 @@ Renderer::~Renderer()
 void Renderer::render(sf::RenderWindow &window)
 {
     window.clear();
-    for(int i = 0; i < sprites.size(); i++)
+    std::map<std::string, sf::Texture>::iterator it = textures.begin();
+    for(int i = 0; i < textures.size(); i++)
     {
-        std::string path = spritePaths.at(i);
-        sf::Sprite spr = sprites.at(path);
+        sf::Sprite spr;
+        spr.setTexture(it->second);
         window.draw(spr);
+        it++;
     }
     window.display();
 }
 
-void Renderer::addSprite(std::string filepath)
+void Renderer::addTexture(std::string filepath)
 {
-    if(sprites.count(filepath) > 0)
+    if(textures.count(filepath) > 0)
         return;
-    sf::Texture tex;
-    if(!tex.loadFromFile(filepath))
-    {
-        std::cout << "Error loading image '" << filepath.c_str() << "'" << std::endl;
-        return;
-    }
+    sf::Texture tex = Assets::loadTexture(filepath);
     textures.insert({filepath, tex});
-    sf::Sprite spr(textures.at(filepath));
-    spritePaths.insert({sprites.size(), filepath});
-    sprites.insert({filepath, spr});
+}
+
+void Renderer::removeTexture(std::string filepath)
+{
+    textures.erase(filepath);
 }

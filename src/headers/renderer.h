@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <map>
+#include <list>
 
 class Renderer
 {
@@ -12,12 +13,11 @@ public:
     ~Renderer();
 
     void render(sf::RenderWindow &window);
-    void addSprite(std::string filepath);
+    void addTexture(std::string filepath);
+    void removeTexture(std::string filepath);
 
 private:
-    std::map<std::string, sf::Sprite> sprites;
     std::map<std::string, sf::Texture> textures;
-    std::map<int, std::string> spritePaths;
 };
 
 #endif

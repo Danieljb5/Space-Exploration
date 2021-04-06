@@ -5,7 +5,7 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Space Exploration", sf::Style::Fullscreen);
 	Renderer renderer;
-	renderer.addSprite("assets/testIcon.png");
+	renderer.addTexture("assets/testIcon.png");
 
 	while(window.isOpen())
 	{
