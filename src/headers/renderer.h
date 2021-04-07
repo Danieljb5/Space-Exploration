@@ -26,7 +26,7 @@ public:
 
 private:
     std::map<std::string, sf::Texture> textures;
-    std::map<int, sf::Sprite> sprites;
+    std::map<int, std::map<int, sf::Sprite>> layers;
     std::map<int, RenderObject> objects;
 };
 

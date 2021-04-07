@@ -15,7 +15,7 @@ int main()
 	Renderer renderer;
 	Game game = {renderer, camera};
 
-	RenderObject obj = {"assets/testIcon.png"};
+	RenderObject obj = {"assets/testIcon.png", 0};
 	renderer.addObject(obj);
 
 	sf::Clock clock;

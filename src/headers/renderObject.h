@@ -9,7 +9,7 @@ class RenderObject
 {
 public:
     RenderObject() {};
-    RenderObject(std::string path, sf::Vector2f pos = {0.f, 0.f}, sf::Vector2f size = {1.f, 1.f});
+    RenderObject(std::string path, int layer = -1, sf::Vector2f pos = {0.f, 0.f}, sf::Vector2f size = {1.f, 1.f});
     ~RenderObject();
 
     void setSprite(std::string path);
@@ -17,6 +17,7 @@ public:
     void setScale(sf::Vector2f size);
     void resize(sf::Vector2f size);
     void setID(int value);
+    void setZIndex(int value);
     void setRebuildFalse();
 
     RenderObject copy();
@@ -24,6 +25,7 @@ public:
     sf::Vector2f getPosition();
     sf::Vector2f getScale();
     int ID();
+    int getZIndex();
     bool shouldRebuild();
 
 private:
@@ -31,6 +33,7 @@ private:
     sf::Vector2f position;
     sf::Vector2f scale;
     int id = -1;
+    int zIndex = -1;
     bool rebuildSprite;
 };
 

@@ -1,8 +1,9 @@
 #include "renderObject.h"
 
-RenderObject::RenderObject(std::string path, sf::Vector2f pos, sf::Vector2f size)
+RenderObject::RenderObject(std::string path, int layer, sf::Vector2f pos, sf::Vector2f size)
 {
     id = -1;
+    zIndex = layer;
     filepath = path;
     position = pos;
     scale = size;
@@ -39,6 +40,11 @@ void RenderObject::setID(int value)
     rebuildSprite = true;
 }
 
+void RenderObject::setZIndex(int value)
+{
+    zIndex = value;
+}
+
 void RenderObject::setRebuildFalse()
 {
     rebuildSprite = false;
@@ -46,7 +52,7 @@ void RenderObject::setRebuildFalse()
 
 RenderObject RenderObject::copy()
 {
-    return RenderObject(filepath, position, scale);
+    return RenderObject(filepath, zIndex, position, scale);
 }
 
 std::string RenderObject::getFilePath()
@@ -67,6 +73,11 @@ sf::Vector2f RenderObject::getScale()
 int RenderObject::ID()
 {
     return id;
+}
+
+int RenderObject::getZIndex()
+{
+    return zIndex;
 }
 
 bool RenderObject::shouldRebuild()

@@ -2,9 +2,16 @@
 #include "renderer.h"
 #include "assets.h"
 
+int minLayer = -1;
+int maxLayer = 4;
+
 Renderer::Renderer()
 {
-    
+    std::map<int, sf::Sprite> sprites;
+    for(int i = minLayer; i <= maxLayer; i++)
+    {
+        layers.insert({i, sprites});
+    }
 }
 
 Renderer::~Renderer()
@@ -15,36 +22,44 @@ Renderer::~Renderer()
 void Renderer::render(sf::RenderWindow &window, Camera &camera)
 {
     window.clear();
-    std::map<int, RenderObject>::iterator it = objects.begin();
-    for(int i = 0; i < objects.size(); i++)
+    for(int z = minLayer; z <= maxLayer; z++)
     {
-        sf::Texture tex = textures.at(it->second.getFilePath());
-        sf::Sprite spr;
-        if(it->second.shouldRebuild())
+        std::map<int, RenderObject>::iterator it = objects.begin();
+        std::cout << "rendering layer: " << z << std::endl;
+        for(int i = 0; i < objects.size(); i++)
         {
-            spr.setTexture(tex);
-            sf::Vector2u size = tex.getSize();
-            spr.setOrigin(size.x / 2, size.y / 2);
-            spr.setPosition(it->second.getPosition());
-            spr.setScale(it->second.getScale());
-            if(sprites.count(it->second.ID()) > 0)
-                sprites.erase(it->second.ID());
-            sprites.insert({it->second.ID(), spr});
-            it->second.setRebuildFalse();
+            if(it->second.getZIndex() == z)
+            {
+                sf::Texture tex = textures.at(it->second.getFilePath());
+                sf::Sprite spr;
+                if(it->second.shouldRebuild())
+                {
+                    spr.setTexture(tex);
+                    sf::Vector2u size = tex.getSize();
+                    spr.setOrigin(size.x / 2, size.y / 2);
+                    spr.setPosition(it->second.getPosition());
+                    spr.setScale(it->second.getScale());
+                    if(layers.at(z).count(it->second.ID()) > 0)
+                        layers.at(z).erase(it->second.ID());
+                    layers.at(z).insert({it->second.ID(), spr});
+                    it->second.setRebuildFalse();
+                }
+                else
+                {
+                    spr = layers.at(z).at(it->second.ID());
+                }
+                sf::Vector2f camPos = camera.getPosition();
+                camPos = {camPos.x, -camPos.y};
+                sf::Vector2f offset = {(1920 / 2) , (1080 / 2)};
+                spr.setPosition(spr.getPosition() * camera.getZoom());
+                spr.move(-camPos * camera.getZoom() + offset);
+                spr.setScale(spr.getScale() * camera.getZoom());
+                window.draw(spr);
+            }
+            it++;
         }
-        else
-        {
-            spr = sprites.at(it->second.ID());
-        }
-        sf::Vector2f camPos = camera.getPosition();
-        camPos = {camPos.x, -camPos.y};
-        sf::Vector2f offset = {(1920 / 2) , (1080 / 2)};
-        spr.setPosition(spr.getPosition() * camera.getZoom());
-        spr.move(-camPos * camera.getZoom() + offset);
-        spr.setScale(spr.getScale() * camera.getZoom());
-        window.draw(spr);
-        it++;
     }
+    
     window.display();
 }
 
