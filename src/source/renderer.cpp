@@ -5,8 +5,14 @@
 int minLayer = -1;
 int maxLayer = 4;
 
-Renderer::Renderer()
+Renderer::Renderer(sf::RenderWindow &window, Camera &camera)
 {
+    this->window = &window;
+    this->camera = &camera;
+    if(!font.loadFromFile("assets/fonts/Roboto-Regular.ttf"))
+    {
+        std::cout << "Error loading font" << std::endl;
+    }
     std::map<int, sf::Sprite> sprites;
     for(int i = minLayer; i <= maxLayer; i++)
     {
@@ -19,11 +25,11 @@ Renderer::~Renderer()
 
 }
 
-void Renderer::render(sf::RenderWindow &window, Camera &camera)
+void Renderer::render()
 {
-    size = window.getSize();
+    window->clear();
+    size = window->getSize();
     scaleFactor = {size.x / 1920.f, size.y / 1080.f};
-    window.clear();
     for(int z = minLayer; z <= maxLayer; z++)
     {
         std::map<int, RenderObject>::iterator it = objects.begin();
@@ -51,20 +57,28 @@ void Renderer::render(sf::RenderWindow &window, Camera &camera)
                 {
                     spr = layers.at(z).at(it->second.ID());
                 }
-                sf::Vector2f camPos = camera.getPosition();
+                sf::Vector2f camPos = camera->getPosition();
                 camPos = {camPos.x * scaleFactor.x, -camPos.y * scaleFactor.y};
                 sf::Vector2f offset = {(size.x / 2.f) , (size.y / 2.f)};
-                spr.setPosition(spr.getPosition() * camera.getZoom());
-                spr.move(-camPos * camera.getZoom() + offset);
-                spr.setScale({spr.getScale().x * scaleFactor.x * camera.getZoom(), spr.getScale().y * scaleFactor.y * camera.getZoom()});
+                spr.setPosition(spr.getPosition() * camera->getZoom());
+                spr.move(-camPos * camera->getZoom() + offset);
+                spr.setScale({spr.getScale().x * scaleFactor.x * camera->getZoom(), spr.getScale().y * scaleFactor.y * camera->getZoom()});
                 if((spr.getPosition().x < size.x && spr.getPosition().x > 0) || (spr.getPosition().y < size.y && spr.getPosition().y > 0) || (spr.getPosition().x + spr.getScale().x < size.x && spr.getPosition().x + spr.getScale().x > 0) || (spr.getPosition().y + spr.getScale().y < size.y && spr.getPosition().y + spr.getScale().y > 0))
-                    window.draw(spr);
+                    window->draw(spr);
             }
             it++;
         }
     }
+
+    std::map<std::string, sf::Text>::iterator textIterator = textToRender.begin();
+    for(int i = 0; i < textToRender.size(); i++)
+    {
+        window->draw(textIterator->second);
+        textIterator++;
+    }
+    textToRender.clear();
     
-    window.display();
+    window->display();
 }
 
 void Renderer::addTexture(std::string filepath)
@@ -110,4 +124,16 @@ int Renderer::updateObject(RenderObject obj)
 RenderObject Renderer::getObject(int id)
 {  
     return objects.at(id);
+}
+
+void Renderer::drawText(std::string text, int size, sf::Vector2f screenPos, sf::Color colour)
+{
+    sf::Text sfText;
+    sfText.setFont(font);
+    sfText.setString(text);
+    sfText.setCharacterSize(size);
+    sfText.setPosition(screenPos);
+    sfText.setFillColor(colour);
+    sfText.setOutlineColor(colour);
+    textToRender.insert({text, sfText});
 }

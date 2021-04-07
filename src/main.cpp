@@ -19,8 +19,14 @@ int main()
 	window.setVerticalSyncEnabled(vSync);
 	window.setFramerateLimit(maxFps);
 	Camera camera;
-	Renderer renderer;
+	Renderer renderer = {window, camera};
 	Game game = {renderer, camera};
+	sf::Image img;
+	if(!img.loadFromFile("assets/testIcon.png"))
+	{
+		std::cout << "Error loading icon" << std::endl;
+	}
+	window.setIcon(img.getSize().x, img.getSize().y, img.getPixelsPtr());
 
 	RenderObject obj = {"assets/testIcon.png", 0};
 	renderer.addObject(obj);
@@ -42,7 +48,7 @@ int main()
 
 		sf::Time dt = clock.restart();
 		game.Update(dt.asSeconds());
-		renderer.render(window, camera);
+		renderer.render();
 	}
 
 	return 0;

@@ -7,6 +7,8 @@ RenderObject::RenderObject(std::string path, int layer, sf::Vector2f pos, sf::Ve
     filepath = path;
     position = pos;
     scale = size;
+    boundingBox.setPosition(pos);
+    boundingBox.setScale(scale);
     rebuildSprite = true;
 }
 
@@ -24,12 +26,14 @@ void RenderObject::setSprite(std::string path)
 void RenderObject::setPosition(sf::Vector2f pos)
 {
     position = pos;
+    boundingBox.setPosition(pos);
     rebuildSprite = true;
 }
 
 void RenderObject::setScale(sf::Vector2f size)
 {
     scale = size;
+    boundingBox.setScale(scale);
     rebuildSprite = true;
 }
 

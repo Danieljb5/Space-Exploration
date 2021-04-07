@@ -19,6 +19,8 @@ public:
     void setID(int value);
     void setZIndex(int value);
     void setRebuildFalse();
+    void setStatic(bool enabled) { isStatic = enabled; }
+    void setCollisions(bool enabled) { collisions = enabled; }
 
     RenderObject copy();
     std::string getFilePath();
@@ -27,6 +29,8 @@ public:
     int ID();
     int getZIndex();
     bool shouldRebuild();
+    bool getStatic() { return isStatic; }
+    bool getCollisions() { return collisions; }
 
 private:
     std::string filepath;
@@ -35,6 +39,9 @@ private:
     int id = -1;
     int zIndex = -1;
     bool rebuildSprite;
+    sf::RectangleShape boundingBox;
+    bool isStatic = true;
+    bool collisions = true;
 };
 
 #endif

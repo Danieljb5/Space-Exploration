@@ -6,6 +6,7 @@ float cameraSmoothSpeed = 3.5f;
 void Player::start(Camera* camera, Renderer* renderer)
 {
     RenderObject obj = RenderObject("assets/testPlayer.png", 1);
+    object.setStatic(false);
     objID = renderer->addObject(obj);
     this->camera = camera;
     this->renderer = renderer;
