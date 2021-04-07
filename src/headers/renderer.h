@@ -17,9 +17,12 @@ public:
     void render(sf::RenderWindow &window, Camera &camera);
     void addTexture(std::string filepath);
     void removeTexture(std::string filepath);
-    void addObject(RenderObject obj);
+    int addObject(RenderObject obj);
     void removeObject(int id);
     void removeObject(RenderObject obj);
+    int updateObject(RenderObject obj);
+
+    RenderObject getObject(int id);
 
 private:
     std::map<std::string, sf::Texture> textures;

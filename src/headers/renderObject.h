@@ -8,6 +8,7 @@
 class RenderObject
 {
 public:
+    RenderObject() {};
     RenderObject(std::string path, sf::Vector2f pos = {0.f, 0.f}, sf::Vector2f size = {1.f, 1.f});
     ~RenderObject();
 
