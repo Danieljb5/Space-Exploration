@@ -28,6 +28,8 @@ private:
     std::map<std::string, sf::Texture> textures;
     std::map<int, std::map<int, sf::Sprite>> layers;
     std::map<int, RenderObject> objects;
+    sf::Vector2u size;
+    sf::Vector2f scaleFactor;
 };
 
 #endif

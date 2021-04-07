@@ -7,10 +7,13 @@
 #include "camera.h"
 #include "game.h"
 
+int width, height;
+
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Space Exploration", sf::Style::Fullscreen);
-	
+	width = sf::VideoMode::getDesktopMode().width;
+	height = sf::VideoMode::getDesktopMode().height;
+	sf::RenderWindow window(sf::VideoMode(width, height), "Space Exploration", sf::Style::Fullscreen);
 	Camera camera;
 	Renderer renderer;
 	Game game = {renderer, camera};

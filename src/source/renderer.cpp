@@ -21,11 +21,12 @@ Renderer::~Renderer()
 
 void Renderer::render(sf::RenderWindow &window, Camera &camera)
 {
+    size = window.getSize();
+    scaleFactor = {size.x / 1920.f, size.y / 1080.f};
     window.clear();
     for(int z = minLayer; z <= maxLayer; z++)
     {
         std::map<int, RenderObject>::iterator it = objects.begin();
-        std::cout << "rendering layer: " << z << std::endl;
         for(int i = 0; i < objects.size(); i++)
         {
             if(it->second.getZIndex() == z)
@@ -37,8 +38,10 @@ void Renderer::render(sf::RenderWindow &window, Camera &camera)
                     spr.setTexture(tex);
                     sf::Vector2u size = tex.getSize();
                     spr.setOrigin(size.x / 2, size.y / 2);
-                    spr.setPosition(it->second.getPosition());
-                    spr.setScale(it->second.getScale());
+                    sf::Vector2f pos = {it->second.getPosition().x * scaleFactor.x, it->second.getPosition().y * scaleFactor.y};
+                    spr.setPosition(pos);
+                    sf::Vector2f scale = {it->second.getScale().x * scaleFactor.x, it->second.getScale().y * scaleFactor.y};
+                    spr.setScale(scale);
                     if(layers.at(z).count(it->second.ID()) > 0)
                         layers.at(z).erase(it->second.ID());
                     layers.at(z).insert({it->second.ID(), spr});
@@ -49,11 +52,11 @@ void Renderer::render(sf::RenderWindow &window, Camera &camera)
                     spr = layers.at(z).at(it->second.ID());
                 }
                 sf::Vector2f camPos = camera.getPosition();
-                camPos = {camPos.x, -camPos.y};
-                sf::Vector2f offset = {(1920 / 2) , (1080 / 2)};
+                camPos = {camPos.x * scaleFactor.x, -camPos.y * scaleFactor.y};
+                sf::Vector2f offset = {(size.x / 2.f) , (size.y / 2.f)};
                 spr.setPosition(spr.getPosition() * camera.getZoom());
                 spr.move(-camPos * camera.getZoom() + offset);
-                spr.setScale(spr.getScale() * camera.getZoom());
+                spr.setScale({spr.getScale().x * scaleFactor.x * camera.getZoom(), spr.getScale().y * scaleFactor.y * camera.getZoom()});
                 window.draw(spr);
             }
             it++;
