@@ -1,7 +1,7 @@
 #include "player.h"
 #include <iostream>
 
-float cameraSmoothSpeed = 1;
+float cameraSmoothSpeed = 3.5f;
 
 void Player::start(Camera* camera, Renderer* renderer)
 {
