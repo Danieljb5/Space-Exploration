@@ -6,6 +6,9 @@ float moveSpeed = 150.f;
 float zoomSpeed = 0.0000000001f;
 Player player;
 sf::Font font;
+int currentFps;
+float fpsUpdateTime = 0.2f;
+sf::Clock cl;
 
 void Game::Start()
 {
@@ -15,7 +18,12 @@ void Game::Start()
 
 void Game::Update(float dt)
 {
-    std::string fps = "FPS: " + std::to_string((int)(1.f / dt));
+    if(cl.getElapsedTime().asSeconds() > fpsUpdateTime)
+    {
+        cl.restart();
+        currentFps = (int)(1.f / dt);
+    }
+    std::string fps = "FPS: " + std::to_string(currentFps);
     renderer->drawText(fps, 24, {5, 5}, sf::Color::White);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {

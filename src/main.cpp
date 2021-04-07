@@ -8,8 +8,8 @@
 #include "game.h"
 
 int width, height;
-bool vSync = true;
-int maxFps = 120;
+bool vSync = false;
+int maxFps = 240;
 
 int main()
 {
