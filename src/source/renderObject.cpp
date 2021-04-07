@@ -6,6 +6,7 @@ RenderObject::RenderObject(std::string path, sf::Vector2f pos, sf::Vector2f size
     filepath = path;
     position = pos;
     scale = size;
+    rebuildSprite = true;
 }
 
 RenderObject::~RenderObject()
@@ -16,22 +17,31 @@ RenderObject::~RenderObject()
 void RenderObject::setSprite(std::string path)
 {
     filepath = path;
+    rebuildSprite = true;
 }
 
 void RenderObject::setPosition(sf::Vector2f pos)
 {
     position = pos;
+    rebuildSprite = true;
 }
 
 void RenderObject::setScale(sf::Vector2f size)
 {
     scale = size;
+    rebuildSprite = true;
 }
 
 void RenderObject::setID(int value)
 {
     if(id == -1)
         id = value;
+    rebuildSprite = true;
+}
+
+void RenderObject::setRebuildFalse()
+{
+    rebuildSprite = false;
 }
 
 RenderObject RenderObject::copy()
@@ -57,4 +67,9 @@ sf::Vector2f RenderObject::getScale()
 int RenderObject::ID()
 {
     return id;
+}
+
+bool RenderObject::shouldRebuild()
+{
+    return rebuildSprite;
 }

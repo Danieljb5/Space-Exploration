@@ -20,13 +20,27 @@ void Renderer::render(sf::RenderWindow &window, Camera &camera)
     {
         sf::Texture tex = textures.at(it->second.getFilePath());
         sf::Sprite spr;
-        spr.setTexture(tex);
+        if(it->second.shouldRebuild())
+        {
+            spr.setTexture(tex);
+            sf::Vector2u size = tex.getSize();
+            spr.setOrigin(size.x / 2, size.y / 2);
+            spr.setPosition(it->second.getPosition());
+            spr.setScale(it->second.getScale());
+            if(sprites.count(it->second.ID()) > 0)
+                sprites.erase(it->second.ID());
+            sprites.insert({it->second.ID(), spr});
+            it->second.setRebuildFalse();
+        }
+        else
+        {
+            spr = sprites.at(it->second.ID());
+        }
         sf::Vector2f camPos = camera.getPosition();
         camPos = {camPos.x, -camPos.y};
-        sf::Vector2u size = tex.getSize();
-        spr.setOrigin(size.x / 2, size.y / 2);
-        spr.setPosition((it->second.getPosition() * camera.getZoom()) - camPos);
-        spr.setScale(it->second.getScale() * camera.getZoom());
+        spr.setPosition(spr.getPosition() * camera.getZoom());
+        spr.move(-camPos);
+        spr.setScale(spr.getScale() * camera.getZoom());
         window.draw(spr);
         it++;
     }

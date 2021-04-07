@@ -16,18 +16,21 @@ public:
     void setScale(sf::Vector2f size);
     void resize(sf::Vector2f size);
     void setID(int value);
+    void setRebuildFalse();
 
     RenderObject copy();
     std::string getFilePath();
     sf::Vector2f getPosition();
     sf::Vector2f getScale();
     int ID();
+    bool shouldRebuild();
 
 private:
     std::string filepath;
     sf::Vector2f position;
     sf::Vector2f scale;
     int id = -1;
+    bool rebuildSprite;
 };
 
 #endif
