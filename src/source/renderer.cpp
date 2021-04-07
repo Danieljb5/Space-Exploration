@@ -57,7 +57,8 @@ void Renderer::render(sf::RenderWindow &window, Camera &camera)
                 spr.setPosition(spr.getPosition() * camera.getZoom());
                 spr.move(-camPos * camera.getZoom() + offset);
                 spr.setScale({spr.getScale().x * scaleFactor.x * camera.getZoom(), spr.getScale().y * scaleFactor.y * camera.getZoom()});
-                window.draw(spr);
+                if((spr.getPosition().x < size.x && spr.getPosition().x > 0) || (spr.getPosition().y < size.y && spr.getPosition().y > 0) || (spr.getPosition().x + spr.getScale().x < size.x && spr.getPosition().x + spr.getScale().x > 0) || (spr.getPosition().y + spr.getScale().y < size.y && spr.getPosition().y + spr.getScale().y > 0))
+                    window.draw(spr);
             }
             it++;
         }

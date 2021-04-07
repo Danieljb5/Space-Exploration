@@ -8,12 +8,16 @@
 #include "game.h"
 
 int width, height;
+bool vSync = true;
+int maxFps = 120;
 
 int main()
 {
 	width = sf::VideoMode::getDesktopMode().width;
 	height = sf::VideoMode::getDesktopMode().height;
 	sf::RenderWindow window(sf::VideoMode(width, height), "Space Exploration", sf::Style::Fullscreen);
+	window.setVerticalSyncEnabled(vSync);
+	window.setFramerateLimit(maxFps);
 	Camera camera;
 	Renderer renderer;
 	Game game = {renderer, camera};
