@@ -7,6 +7,7 @@
 #include <list>
 #include "renderObject.h"
 #include "camera.h"
+#include "tilemap.h"
 
 class Renderer
 {
@@ -19,7 +20,7 @@ public:
     void removeTexture(std::string filepath);
     void removeObject(int id);
     void removeObject(RenderObject obj);
-    void drawText(std::string text, int size, sf::Vector2f screenPosition, sf::Color colour);
+    void drawText(std::string text, int size, sf::Vector2f screenPosition, sf::Color colour = sf::Color::White);
     int addObject(RenderObject obj);
     int updateObject(RenderObject obj);
 
@@ -27,8 +28,12 @@ public:
 
 private:
     std::map<std::string, sf::Texture> textures;
-    std::map<int, std::map<int, sf::Sprite>> layers;
     std::map<int, RenderObject> objects;
+    std::map<int, std::map<int, sf::Sprite>> layers;
+    std::map<int, bool> staticLayers;
+    std::vector<TileMap> tileMaps;
+    sf::Texture tileMap;
+    std::string tileSet = "assets/tileMap.png";
     std::map<std::string, sf::Text> textToRender;
     sf::Vector2u size;
     sf::Vector2f scaleFactor;

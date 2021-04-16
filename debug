@@ -1,0 +1,4 @@
+#!/bin/bash
+./run
+cd out
+gnome-terminal -- gdb "Space Exploration"

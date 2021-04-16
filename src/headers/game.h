@@ -9,7 +9,7 @@
 class Game
 {
 public:
-    Game(Renderer &r, Camera &c) { renderer = &r; camera = &c; }
+    Game(Renderer* r, Camera* c) { renderer = r; camera = c; }
     ~Game() {}
 
     void Start();

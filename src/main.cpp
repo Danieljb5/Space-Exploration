@@ -8,7 +8,7 @@
 #include "game.h"
 
 int width, height;
-bool vSync = false;
+bool vSync = false, fpsCap = false;
 int maxFps = 240;
 
 int main()
@@ -17,19 +17,25 @@ int main()
 	height = sf::VideoMode::getDesktopMode().height;
 	sf::RenderWindow window(sf::VideoMode(width, height), "Space Exploration", sf::Style::Fullscreen);
 	window.setVerticalSyncEnabled(vSync);
-	window.setFramerateLimit(maxFps);
+	if(fpsCap)
+		window.setFramerateLimit(maxFps);
+	else
+		window.setFramerateLimit(999999999999);
 	Camera camera;
 	Renderer renderer = {window, camera};
-	Game game = {renderer, camera};
+	Game game = {&renderer, &camera};
 	sf::Image img;
 	if(!img.loadFromFile("assets/testIcon.png"))
 	{
 		std::cout << "Error loading icon" << std::endl;
 	}
 	window.setIcon(img.getSize().x, img.getSize().y, img.getPixelsPtr());
-
-	RenderObject obj = {"assets/testIcon.png", 0};
-	renderer.addObject(obj);
+	for(int i = 0; i < 1; i++)
+	{
+		RenderObject obj = {"assets/testIcon.png", 0, {i * 10, 0}, {100.f, 100.f}};
+		renderer.addObject(obj);
+	}
+	
 
 	sf::Clock clock;
 

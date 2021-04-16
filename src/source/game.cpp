@@ -23,8 +23,16 @@ void Game::Update(float dt)
         cl.restart();
         currentFps = (int)(1.f / dt);
     }
+    camera->setZoom(mouseWheel * zoomSpeed);
+    if(camera->getZoom() < 0.05)
+        camera->setZoom(0.05);
+    if(camera->getZoom() > 1)
+        camera->setZoom(1);
+    mouseWheel = camera->getZoom() / zoomSpeed;
     std::string fps = "FPS: " + std::to_string(currentFps);
     renderer->drawText(fps, 24, {5, 5}, sf::Color::White);
+    std::string zoom = "Zoom: " + std::to_string(camera->getZoom());
+    renderer->drawText(zoom, 24, {5, 35}, sf::Color::White);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
         player.move({0, moveSpeed * dt});
@@ -41,6 +49,5 @@ void Game::Update(float dt)
     {
         player.move({-moveSpeed * dt, 0});
     }
-    camera->setZoom(mouseWheel * zoomSpeed);
     player.update(dt);
 }
