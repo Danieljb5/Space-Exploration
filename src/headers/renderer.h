@@ -8,6 +8,7 @@
 #include "renderObject.h"
 #include "camera.h"
 #include "tilemap.h"
+#include "particleSystem.h"
 
 class Renderer
 {
@@ -21,8 +22,10 @@ public:
     void removeObject(int id);
     void removeObject(RenderObject obj);
     void drawText(std::string text, int size, sf::Vector2f screenPosition, sf::Color colour = sf::Color::White);
+    void drawParticles(ParticleSystem &particleSystem);
     int addObject(RenderObject obj);
     int updateObject(RenderObject obj);
+    sf::Vector2f screenToWorld(sf::Vector2f org) { return {((org.x + camera->getPosition().x  - (window->getSize().x / 2.f)) / camera->getZoom() * scaleFactor.x), ((-camera->getPosition().y + org.y - (window->getSize().y / 2.f)) / camera->getZoom() * scaleFactor.y)}; }
 
     RenderObject getObject(int id);
 
@@ -35,6 +38,7 @@ private:
     sf::Texture tileMap;
     std::string tileSet = "assets/tileMap.png";
     std::map<std::string, sf::Text> textToRender;
+    std::map<int, ParticleSystem> particlesToRender;
     sf::Vector2u size;
     sf::Vector2f scaleFactor;
     sf::Font font;

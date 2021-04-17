@@ -50,8 +50,20 @@ void Renderer::render()
     scaleFactor = {size.x / 1920.f, size.y / 1080.f};
     sf::Vector2f camPos = camera->getPosition();
     sf::Vector2f cPos = {camPos.x * scaleFactor.x, -camPos.y * scaleFactor.y};
+    sf::Vector2f offset = {(size.x / 2.f) , (size.y / 2.f)};
     for(int z = minLayer; z <= maxLayer; z++)
     {
+        if(z == 7)
+        {
+            for(int i = 0; i < particlesToRender.size(); i++)
+            {
+                ParticleSystem ps = particlesToRender.at(i);
+                ps.setPosition({-camPos.x * camera->getZoom() + offset.x, camPos.y * camera->getZoom() + offset.y});
+                ps.setScale(scaleFactor * camera->getZoom());
+                window->draw(ps);
+            }
+            particlesToRender.clear();
+        }
         if(staticLayers.at(z))
         {
             if(tileMaps.count(z) > 0)
@@ -92,7 +104,6 @@ void Renderer::render()
                 {
                     spr = layers.at(z).at(it->second.ID());
                 }
-                sf::Vector2f offset = {(size.x / 2.f) , (size.y / 2.f)};
                 spr.setPosition(spr.getPosition() * camera->getZoom());
                 spr.move(-cPos * camera->getZoom() + offset);
                 spr.setScale({spr.getScale().x * scaleFactor.x * camera->getZoom(), spr.getScale().y * scaleFactor.y * camera->getZoom()});
@@ -169,4 +180,9 @@ void Renderer::drawText(std::string text, int size, sf::Vector2f screenPos, sf::
     sfText.setFillColor(colour);
     sfText.setOutlineColor(colour);
     textToRender.insert({text, sfText});
+}
+
+void Renderer::drawParticles(ParticleSystem &particleSystem)
+{
+    particlesToRender.insert({particlesToRender.size(), particleSystem});
 }

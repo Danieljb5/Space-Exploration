@@ -1,5 +1,6 @@
 #include "game.h"
 #include "player.h"
+#include "particleSystem.h"
 #include <iostream>
 
 float moveSpeed = 150.f;
@@ -9,6 +10,7 @@ sf::Font font;
 int currentFps;
 float fpsUpdateTime = 0.2f;
 sf::Clock cl;
+ParticleSystem ps = {100000, 5.f};
 
 void Game::Start()
 {
@@ -49,5 +51,8 @@ void Game::Update(float dt)
     {
         player.move({-moveSpeed * dt, 0});
     }
+    ps.setEmitter(renderer->screenToWorld({(float)sf::Mouse::getPosition().x, (float)sf::Mouse::getPosition().y}));
     player.update(dt);
+    ps.update(dt);
+    renderer->drawParticles(ps);
 }
