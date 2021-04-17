@@ -22,8 +22,12 @@ Renderer::Renderer(sf::RenderWindow &window, Camera &camera)
         {
             staticLayers.insert({i, true});
             TileMap map;
-            int tiles[1] = {1};
-            map.load(tileSet, {32, 32}, tiles, 0, 0);
+            int tiles[10] = {1, 2, 1, 0, 1, 2, 3, 2, 0, 1};
+            if(!map.load(tileSet, {8, 8}, tiles, 2, 5))
+            {
+                std::cout << "Error loading tilemap" << std::endl;
+            }
+            tileMaps.insert({i, map});
         }
         else
         {
@@ -50,8 +54,17 @@ void Renderer::render()
     {
         if(staticLayers.at(z))
         {
-            //if(tileMaps.at(z).isValid())
-                //window->draw(tileMaps.at(z));
+            if(tileMaps.count(z) > 0)
+            {
+                if(tileMaps.at(z).isValid())
+                {
+                    window->draw(tileMaps.at(z));
+                    continue;
+                }
+                std::cout << "Error drawing tilemap: invalid tilemap" << std::endl;
+                continue;
+            }
+            std::cout << "Error drawing tilemap: tilemap does not exist" << std::endl;
             continue;
         }
         std::map<int, RenderObject>::iterator it = objects.begin();

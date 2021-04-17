@@ -20,7 +20,7 @@ int main()
 	if(fpsCap)
 		window.setFramerateLimit(maxFps);
 	else
-		window.setFramerateLimit(999999999999);
+		window.setFramerateLimit((unsigned int)3567587327);
 	Camera camera;
 	Renderer renderer = {window, camera};
 	Game game = {&renderer, &camera};
@@ -32,7 +32,7 @@ int main()
 	window.setIcon(img.getSize().x, img.getSize().y, img.getPixelsPtr());
 	for(int i = 0; i < 1; i++)
 	{
-		RenderObject obj = {"assets/testIcon.png", 0, {i * 10, 0}, {100.f, 100.f}};
+		RenderObject obj = {"assets/testIcon.png", 0, {(float)(i * 10), 0}, {100.f, 100.f}};
 		renderer.addObject(obj);
 	}
 	

@@ -31,7 +31,7 @@ private:
     std::map<int, RenderObject> objects;
     std::map<int, std::map<int, sf::Sprite>> layers;
     std::map<int, bool> staticLayers;
-    std::vector<TileMap> tileMaps;
+    std::map<int, TileMap> tileMaps;
     sf::Texture tileMap;
     std::string tileSet = "assets/tileMap.png";
     std::map<std::string, sf::Text> textToRender;

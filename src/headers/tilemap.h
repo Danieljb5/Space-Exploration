@@ -37,7 +37,9 @@ public:
 
     bool isValid()
     {
-        return m_vertices.getVertexCount() > 0;
+        if(m_vertices.getVertexCount() > 0)
+            return true;
+        return false;
     }
 
 private:
