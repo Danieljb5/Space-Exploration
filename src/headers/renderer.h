@@ -25,7 +25,7 @@ public:
     void drawParticles(ParticleSystem &particleSystem);
     int addObject(RenderObject obj);
     int updateObject(RenderObject obj);
-    sf::Vector2f screenToWorld(sf::Vector2f org) { return {((org.x + camera->getPosition().x  - (window->getSize().x / 2.f)) / camera->getZoom() * scaleFactor.x), ((-camera->getPosition().y + org.y - (window->getSize().y / 2.f)) / camera->getZoom() * scaleFactor.y)}; }
+    sf::Vector2f screenToWorld(sf::Vector2f org) { return {(((org.x + camera->getPosition().x  - (window->getSize().x / 2.f)) / camera->getZoom()) / scaleFactor.x), (((-camera->getPosition().y + org.y - (window->getSize().y / 2.f)) / camera->getZoom()) / scaleFactor.y)}; }
 
     RenderObject getObject(int id);
 
