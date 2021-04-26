@@ -3,7 +3,7 @@
 #define GAME_H
 
 #include "renderer.h"
-#include "renderObject.h"
+#include "renderObj.h"
 #include "camera.h"
 
 class Game

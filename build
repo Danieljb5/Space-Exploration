@@ -1,8 +1,9 @@
 #!/bin/bash
 SRCDIR=src
-SRCS=$(find $SRCDIR -name *.cpp)
-g++ -c $SRCS -I src -I src/headers
-g++ -O *.o -o "Space Exploration" -I src/source -I src/headers -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network
+#SRCS=$(find $SRCDIR -name *.cpp)
+SRCS=src/main.cpp
+g++ -c $SRCS -I src -I src/headers -I lib/bgfx/include -I lib/bx/include -I lib/bimg/include -w
+g++ -O *.o -o "Space Exploration" -I src/source -I src/headers -I lib/bgfx/include -I lib/bx/include -I lib/bimg/include -lSDL2 -lGL -lX11 -ldl -lpthread -lrt lib/bgfx/.build/linux64_gcc/bin/libbgfx-shared-libRelease.so
 mkdir out
 mv "Space Exploration" out
 rm *.o

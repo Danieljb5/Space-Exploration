@@ -7,8 +7,7 @@
 
 class Assets
 {
-public:
-    static sf::Texture loadTexture(std::string filepath);
+    static void load(std::string path);
 };
 
 #endif

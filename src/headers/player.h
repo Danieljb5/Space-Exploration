@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "camera.h"
-#include "renderObject.h"
+#include "renderObj.h"
 #include "renderer.h"
 
 class Player
@@ -28,7 +28,6 @@ private:
     sf::Vector2f scale;
     Camera* camera;
     Renderer* renderer;
-    RenderObject object;
     int objID;
 };
 

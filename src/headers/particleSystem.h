@@ -8,12 +8,13 @@
 class ParticleSystem : public sf::Drawable, public sf::Transformable
 {
 public:
-    ParticleSystem(unsigned int count, float lifetime = 3.f, sf::Color colour = sf::Color::White) :
+    ParticleSystem(unsigned int count, float lifetime = 3.f, float speed = 1.f, sf::Color colour = sf::Color::White) :
     m_particles(count),
     m_vertices(sf::Points, count),
     m_lifetime(sf::seconds(lifetime)),
     m_emitter(0.f, 0.f),
-    m_colour(colour)
+    m_colour(colour),
+    m_speed(speed)
     {}
 
     void setEmitter(sf::Vector2f position)
@@ -56,7 +57,7 @@ private:
     void resetParticle(std::size_t index)
     {
         float angle = (std::rand() % 360) * 3.14f / 180.f;
-        float speed = (std::rand() % 50) + 50.f;
+        float speed = (std::rand() % (int)(m_speed * 50.f)) + (m_speed * 50.f);
         m_particles[index].velocity = {std::cos(angle) * speed, std::sin(angle) * speed};
         float tmp = (m_lifetime.asSeconds() / 3.f) * 2000.f;
         float lifetime = ((std::rand() % (int)tmp) + ((m_lifetime.asSeconds() / 3.f) * 1000.f));
@@ -70,6 +71,7 @@ private:
     sf::Time m_lifetime;
     sf::Vector2f m_emitter;
     sf::Color m_colour;
+    float m_speed;
 };
 
 #endif

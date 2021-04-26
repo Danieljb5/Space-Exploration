@@ -1,9 +1,10 @@
 #include <iostream>
 #include "renderer.h"
-#include "assets.h"
 
 int minLayer = -1;
 int maxLayer = 8;
+
+sf::Vector2f cpo;
 
 Renderer::Renderer(sf::RenderWindow &window, Camera &camera)
 {
@@ -13,28 +14,11 @@ Renderer::Renderer(sf::RenderWindow &window, Camera &camera)
     {
         std::cout << "Error loading font" << std::endl;
     }
-    std::map<int, sf::Sprite> sprites;
-    for(int i = minLayer; i <= maxLayer; i++)
-    {
-        layers.insert({i, sprites});
-        std::vector<sf::VertexArray>::iterator it;
-        if((i >= -1 && i <= 3) || i == 5)
-        {
-            staticLayers.insert({i, true});
-            TileMap map;
-            int tiles[10] = {1, 2, 1, 0, 1, 2, 3, 2, 0, 1};
-            if(!map.load(tileSet, {8, 8}, tiles, 2, 5))
-            {
-                std::cout << "Error loading tilemap" << std::endl;
-            }
-            tileMaps.insert({i, map});
-        }
-        else
-        {
-            staticLayers.insert({i, false});
-        }
-        it++;
-    }
+    //moony::SpriteBatch batch;
+    //for(int i = minLayer; i <= maxLayer; i++)
+    //{
+    //    batches.insert({i, batch});
+    //}
 }
 
 Renderer::~Renderer()
@@ -64,54 +48,33 @@ void Renderer::render()
             }
             particlesToRender.clear();
         }
-        if(staticLayers.at(z))
-        {
-            if(tileMaps.count(z) > 0)
-            {
-                if(tileMaps.at(z).isValid())
-                {
-                    window->draw(tileMaps.at(z));
-                    continue;
-                }
-                std::cout << "Error drawing tilemap: invalid tilemap" << std::endl;
-                continue;
-            }
-            std::cout << "Error drawing tilemap: tilemap does not exist" << std::endl;
-            continue;
-        }
-        std::map<int, RenderObject>::iterator it = objects.begin();
+        std::map<int, RenderObj*>::iterator it = objects.begin();
+        //batches.at(z).clear();
         for(int i = 0; i < objects.size(); i++)
         {
-            if(it->second.getZIndex() == z)
+            std::cout << it->second->getLayer() << std::endl;
+            if(it->second->getLayer() != z)
             {
-                sf::Texture tex = textures.at(it->second.getFilePath());
-                sf::Sprite spr;
-                if(it->second.shouldRebuild())
+                //moony::Sprite* spr;
+                if(it->second->shouldRebuild())
                 {
-                    spr.setTexture(tex);
-                    sf::Vector2u size = tex.getSize();
-                    spr.setOrigin(size.x / 2, size.y / 2);
-                    sf::Vector2f pos = {it->second.getPosition().x * scaleFactor.x, it->second.getPosition().y * scaleFactor.y};
-                    spr.setPosition(pos);
-                    sf::Vector2f scale = {it->second.getScale().x * scaleFactor.x, it->second.getScale().y * scaleFactor.y};
-                    spr.setScale(scale);
-                    if(layers.at(z).count(it->second.ID()) > 0)
-                        layers.at(z).erase(it->second.ID());
-                    layers.at(z).insert({it->second.ID(), spr});
-                    it->second.setRebuildFalse();
+                    //it->second->getSpritePtr()->setOrigin(0.5f, 0.5f);
+                    it->second->setRebuildFalse();
                 }
-                else
+                //spr = it->second->getSpritePtr();
+                if(camPos != cpo)
                 {
-                    spr = layers.at(z).at(it->second.ID());
+                    //spr->setPosition(it->second->getPosition() * camera->getZoom());
+                    //spr->move(-cPos * camera->getZoom() + offset);
+                    //spr->setScale({it->second->getScale().x * scaleFactor.x * camera->getZoom(), it->second->getScale().y * scaleFactor.y * camera->getZoom()});
                 }
-                spr.setPosition(spr.getPosition() * camera->getZoom());
-                spr.move(-cPos * camera->getZoom() + offset);
-                spr.setScale({spr.getScale().x * scaleFactor.x * camera->getZoom(), spr.getScale().y * scaleFactor.y * camera->getZoom()});
-                if((spr.getPosition().x < size.x && spr.getPosition().x > 0) || (spr.getPosition().y < size.y && spr.getPosition().y > 0) || (spr.getPosition().x + spr.getScale().x < size.x && spr.getPosition().x + spr.getScale().x > 0) || (spr.getPosition().y + spr.getScale().y < size.y && spr.getPosition().y + spr.getScale().y > 0))
-                    window->draw(spr);
+                //moony::Sprite sprite = it->second->getSprite();
+                //batches.at(z).draw(sprite);
             }
             it++;
         }
+        //batches.at(z).order();
+        //window->draw(batches.at(z));
     }
 
     std::map<std::string, sf::Text>::iterator textIterator = textToRender.begin();
@@ -125,20 +88,7 @@ void Renderer::render()
     window->display();
 }
 
-void Renderer::addTexture(std::string filepath)
-{
-    if(textures.count(filepath) > 0)
-        return;
-    sf::Texture tex = Assets::loadTexture(filepath);
-    textures.insert({filepath, tex});
-}
-
-void Renderer::removeTexture(std::string filepath)
-{
-    textures.erase(filepath);
-}
-
-int Renderer::addObject(RenderObject obj)
+int Renderer::addObject(RenderObj obj)
 {
     bool validID = false;
     int id = -1;
@@ -152,20 +102,12 @@ int Renderer::addObject(RenderObject obj)
         }
     }
     obj.setID(id);
-    objects.insert({obj.ID(), obj});
-    addTexture(obj.getFilePath());
-    return objects.at(obj.ID()).ID();
+    objects.insert({obj.ID(), &obj});
+    std::cout << objects.at(obj.ID())->getLayer() << std::endl;
+    return objects.at(obj.ID())->ID();
 }
 
-int Renderer::updateObject(RenderObject obj)
-{
-    if(objects.count(obj.ID()) > 0)
-        objects.erase(obj.ID());
-    objects.insert({obj.ID(), obj});
-    return objects.at(obj.ID()).ID();
-}
-
-RenderObject Renderer::getObject(int id)
+RenderObj* Renderer::getObject(int id)
 {  
     return objects.at(id);
 }
