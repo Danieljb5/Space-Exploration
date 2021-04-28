@@ -1,10 +1,9 @@
 #!/bin/bash
 SRCDIR=src
-#SRCS=$(find $SRCDIR -name *.cpp)
-SRCS=src/main.cpp
-g++ -c $SRCS -I src -I src/headers -I lib/bgfx/include -I lib/bx/include -I lib/bimg/include -w
-g++ -O *.o -o "Space Exploration" -I src/source -I src/headers -I lib/bgfx/include -I lib/bx/include -I lib/bimg/include -lSDL2 -lGL -lX11 -ldl -lpthread -lrt lib/bgfx/.build/linux64_gcc/bin/libbgfx-shared-libRelease.so
-mkdir out
+SRCS=$(find $SRCDIR -name *.cpp)
+g++ -c $SRCS -I src -I src/headers -I lib/glad/include -I lib/glfw-3.3.4/include -w -lglfw -g -Wall -Wextra -Werror -pedantic -fcheck=all
+g++ -O *.o lib/glad/glad.o -o "Space Exploration" -I src/source -I src/headers -I lib/glad/include -I lib/glfw-3.3.4/include -lglfw -ldl -g -Wall -Wextra -Werror -pedantic -fcheck=all
+mkdir -p out
 mv "Space Exploration" out
 rm *.o
 cp assets out -r

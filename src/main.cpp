@@ -1,105 +1,114 @@
-#include <bgfx/bgfx.h>
-#include <bgfx/platform.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
-//#include <map>
+#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#include "renderer.h"
+#include "util.h"
 #include <iostream>
-//#include "renderer.h"
-//#include "renderObj.h"
-//#include "camera.h"
-//#include "game.h"
 
 int width, height;
-SDL_Window* window = NULL;
-bool vSync = false, fpsCap = false;
-int maxFps = 240;
+
+static const struct Vertex
+{
+	float x, y;
+	float r, g, b;
+}vertices[3] = 
+{
+	{ -0.6f, -0.4f, 1.f, 0.f, 0.f },
+	{  0.6f, -0.4f, 0.f, 1.f, 0.f },
+	{   0.f,  0.6f, 0.f, 0.f, 1.f }
+};
+static const char* vertex_shader_text = 
+	"#version 110\n"
+    "uniform mat4 MVP;\n"
+    "attribute vec3 vCol;\n"
+    "attribute vec2 vPos;\n"
+    "varying vec3 color;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+    "    color = vCol;\n"
+    "}\n";
+static const char* fragment_shader_text =
+	"#version 110\n"
+    "varying vec3 color;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_FragColor = vec4(color, 1.0);\n"
+    "}\n";
 
 int main()
 {
+	GLFWwindow* window;
+	GLuint vertexBuffer, vertexShader, fragmentShader, program;
+	GLint mvpLocation, vposLocation, vcolLocation;
+
+	if(!glfwInit())
+	{
+		std::cout << "Failed to initialise glfw" << std::endl;
+		return -1;
+	}
+	glfwSetErrorCallback(Util::errorCallback);
+
 	width = 1920;
 	height = 1080;
 
-	if(SDL_Init(SDL_INIT_VIDEO) < 0)
+	glfwDefaultWindowHints();
+	window = glfwCreateWindow(width, height, "Space Exploration", glfwGetPrimaryMonitor(), NULL);
+	if(!window)
 	{
-		std::cout << "SDL could not initialise, SDL_Error: " << SDL_GetError() << std::endl;
+		std::cout << "Failed to initialise window" << std::endl;
+		glfwTerminate();
 		return -1;
 	}
-	window = SDL_CreateWindow("Space Exploration", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_FULLSCREEN);
-	if(window == NULL)
-	{
-		std::cout << "Window could not initialise, SDL_Error: " << SDL_GetError() << std::endl;
-		return -1;
-	}
+	glfwSetKeyCallback(window, Util::key_callback);
+	glfwMakeContextCurrent(window);
+	gladLoadGL();
+	glfwSwapInterval(1);
 
-	SDL_SysWMinfo wmi;
-	SDL_VERSION(&wmi.version);
-	if(!SDL_GetWindowWMInfo(window, &wmi))
-		return 1;
+	glGenBuffers(1, &vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	bgfx::PlatformData pd;
-	pd.ndt = wmi.info.x11.display;
-	pd.nwh = (void*)(uintptr_t)wmi.info.x11.window;
-	bgfx::setPlatformData(pd);
-	bgfx::renderFrame();
-	bgfx::init();
-	bgfx::reset(width, height, BGFX_RESET_VSYNC);
-	bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));
-	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xFFFFFFFF, 1.0f, 0);
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertex_shader_text, NULL);
+	glCompileShader(vertexShader);
 
-	bgfx::touch(0);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragment_shader_text, NULL);
+	glCompileShader(fragmentShader);
 
-	/*
-	Camera camera;
-	Renderer renderer = {window, camera};
-	Game game = {&renderer, &camera};
-	sf::Image img;
-	if(!img.loadFromFile("assets/testIcon.png"))
-	{
-		std::cout << "Error loading icon" << std::endl;
-	}
-	window.setIcon(img.getSize().x, img.getSize().y, img.getPixelsPtr());
+	program = glCreateProgram();
+	glAttachShader(program, vertexShader);
+	glAttachShader(program, fragmentShader);
+	glLinkProgram(program);
+
+	mvpLocation = glGetUniformLocation(program, "MVP");
+	vposLocation = glGetAttribLocation(program, "vPos");
+	vcolLocation = glGetAttribLocation(program, "vCol");
+
+	glEnableVertexAttribArray(vposLocation);
+	glVertexAttribPointer(vposLocation, 2, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (void*) 0);
+	glEnableVertexAttribArray(vcolLocation);
+	glVertexAttribPointer(vcolLocation, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (void*) (sizeof(float) * 2));
 	
 
-	sf::Clock clock;
+	Renderer renderer = {window, program, mvpLocation};
 
-	game.Start();
 
-	while(window.isOpen())
+	double time = glfwGetTime();
+	double lastTime = 0;
+
+	while(!glfwWindowShouldClose(window))
 	{
-		sf::Event event;
-		while(window.pollEvent(event))
-		{
-			if(event.type == sf::Event::Closed)
-				window.close();
-			if(event.type == sf::Event::MouseWheelScrolled)
-				game.MouseWheelInterrupt(event.mouseWheel.x);
-		}
+		time = glfwGetTime();
+		double dt = time - lastTime;
+		lastTime = time;
 
-		sf::Time dt = clock.restart();
-		game.Update(dt.asSeconds());
 		renderer.render();
+		glfwPollEvents();
 	}
 
-	return 0;
-
-	*/
-
-	bool exit = false;
-	SDL_Event event;
-
-	while (!exit)
-	{
-		while(SDL_PollEvent(&event) != 0)
-		{
-			if(event.type == SDL_QUIT)
-				exit = true;
-		}
-
-		bgfx::frame();
-	}
-	
-	bgfx::shutdown();
-	SDL_DestroyWindow(window);
-	SDL_Quit();
+	glfwDestroyWindow(window);
+	glfwTerminate();
 	return 0;
 }
