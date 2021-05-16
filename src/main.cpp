@@ -1,114 +1,86 @@
 #include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include "renderer.h"
-#include "util.h"
+#include "game.h"
+#include "resourceManager.h"
 #include <iostream>
 
-int width, height;
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
-static const struct Vertex
+unsigned int SCREEN_WIDTH = 1280;
+unsigned int SCREEN_HEIGHT = 720;
+
+Game game(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+int main(int argc, char* argv[])
 {
-	float x, y;
-	float r, g, b;
-}vertices[3] = 
-{
-	{ -0.6f, -0.4f, 1.f, 0.f, 0.f },
-	{  0.6f, -0.4f, 0.f, 1.f, 0.f },
-	{   0.f,  0.6f, 0.f, 0.f, 1.f }
-};
-static const char* vertex_shader_text = 
-	"#version 110\n"
-    "uniform mat4 MVP;\n"
-    "attribute vec3 vCol;\n"
-    "attribute vec2 vPos;\n"
-    "varying vec3 color;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-    "    color = vCol;\n"
-    "}\n";
-static const char* fragment_shader_text =
-	"#version 110\n"
-    "varying vec3 color;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_FragColor = vec4(color, 1.0);\n"
-    "}\n";
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, false);
 
-int main()
-{
-	GLFWwindow* window;
-	GLuint vertexBuffer, vertexShader, fragmentShader, program;
-	GLint mvpLocation, vposLocation, vcolLocation;
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	SCREEN_WIDTH = mode->width;
+	SCREEN_HEIGHT = mode->height;
 
-	if(!glfwInit())
-	{
-		std::cout << "Failed to initialise glfw" << std::endl;
-		return -1;
-	}
-	glfwSetErrorCallback(Util::errorCallback);
-
-	width = 1920;
-	height = 1080;
-
-	glfwDefaultWindowHints();
-	window = glfwCreateWindow(width, height, "Space Exploration", glfwGetPrimaryMonitor(), NULL);
-	if(!window)
-	{
-		std::cout << "Failed to initialise window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwSetKeyCallback(window, Util::key_callback);
+	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Space Exploration", glfwGetPrimaryMonitor(), nullptr);
 	glfwMakeContextCurrent(window);
-	gladLoadGL();
-	glfwSwapInterval(1);
 
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertex_shader_text, NULL);
-	glCompileShader(vertexShader);
-
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragment_shader_text, NULL);
-	glCompileShader(fragmentShader);
-
-	program = glCreateProgram();
-	glAttachShader(program, vertexShader);
-	glAttachShader(program, fragmentShader);
-	glLinkProgram(program);
-
-	mvpLocation = glGetUniformLocation(program, "MVP");
-	vposLocation = glGetAttribLocation(program, "vPos");
-	vcolLocation = glGetAttribLocation(program, "vCol");
-
-	glEnableVertexAttribArray(vposLocation);
-	glVertexAttribPointer(vposLocation, 2, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (void*) 0);
-	glEnableVertexAttribArray(vcolLocation);
-	glVertexAttribPointer(vcolLocation, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (void*) (sizeof(float) * 2));
-	
-
-	Renderer renderer = {window, program, mvpLocation};
+	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		std::cout << "Failed to initialise GLAD" << std::endl;
+		return -1;
+	}
 
 
-	double time = glfwGetTime();
-	double lastTime = 0;
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	game.Init();
+
+	float dt = 0.f;
+	float lastTime = 0.f;
 
 	while(!glfwWindowShouldClose(window))
 	{
-		time = glfwGetTime();
-		double dt = time - lastTime;
-		lastTime = time;
-
-		renderer.render();
+		float currentTime = glfwGetTime();
+		dt = currentTime - lastTime;
+		lastTime = currentTime;
 		glfwPollEvents();
+		game.ProcessInput(dt);
+		game.Update(dt);
+
+		glClearColor(0.f, 0.f, 0.f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		game.Render();
+
+		glfwSwapBuffers(window);
 	}
 
-	glfwDestroyWindow(window);
+	ResourceManager::Clear();
+
 	glfwTerminate();
 	return 0;
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+	if (key >= 0 && key < 1024)
+    {
+        if (action == GLFW_PRESS)
+            game.keys[key] = true;
+        else if (action == GLFW_RELEASE)
+            game.keys[key] = false;
+    }
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
 }

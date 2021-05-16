@@ -1,9 +1,13 @@
 #!/bin/bash
+rm build.log
 SRCDIR=src
 SRCS=$(find $SRCDIR -name *.cpp)
-g++ -c $SRCS -I src -I src/headers -I lib/glad/include -I lib/glfw-3.3.4/include -w -lglfw -g -Wall -Wextra -Werror -pedantic -fcheck=all
-g++ -O *.o lib/glad/glad.o -o "Space Exploration" -I src/source -I src/headers -I lib/glad/include -I lib/glfw-3.3.4/include -lglfw -ldl -g -Wall -Wextra -Werror -pedantic -fcheck=all
-mkdir -p out
-mv "Space Exploration" out
-rm *.o
-cp assets out -r
+g++ -c $SRCS -I src -I src/headers -I lib/glad/include -I lib/glfw-3.3.4/include -I lib/glm -I lib/stb-master -w -lglfw -ldl -lglm -g -Wall -Wextra -Werror -pedantic -fcheck=all &>> build.log
+g++ -O *.o lib/glad/glad.o -o "Space Exploration" -I src/source -I src/headers -I lib/glad/include -I lib/glfw-3.3.4/include -I lib/glm -I lib/stb-master -lglfw -ldl -g -Wall -Wextra -Werror -pedantic -fcheck=all &>> build.log
+mkdir -p out &>> build.log
+mv "Space Exploration" out &>> build.log
+rm *.o &>> build.log
+cp assets out -r &>> build.log
+if [ ! -s build.log ]
+then rm build.log
+fi
