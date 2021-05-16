@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "mapData.h"
 
 enum GameState {
     GAME_ACTIVE,
@@ -21,6 +22,7 @@ public:
     void Update(float dt);
     void ProcessInput(float dt);
     void Render();
+    MapData map;
 };
 
 #endif

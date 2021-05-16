@@ -10,7 +10,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 unsigned int SCREEN_WIDTH = 1280;
 unsigned int SCREEN_HEIGHT = 720;
 
-Game game(SCREEN_WIDTH, SCREEN_HEIGHT);
+Game game = {SCREEN_WIDTH, SCREEN_HEIGHT};
 
 int main(int argc, char* argv[])
 {
@@ -23,6 +23,8 @@ int main(int argc, char* argv[])
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 	SCREEN_WIDTH = mode->width;
 	SCREEN_HEIGHT = mode->height;
+
+	game = {SCREEN_WIDTH, SCREEN_HEIGHT};
 
 	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Space Exploration", glfwGetPrimaryMonitor(), nullptr);
 	glfwMakeContextCurrent(window);
@@ -40,7 +42,6 @@ int main(int argc, char* argv[])
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
 	game.Init();
 

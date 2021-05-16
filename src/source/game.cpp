@@ -2,6 +2,7 @@
 #include "resourceManager.h"
 #include "spriteRenderer.h"
 #include "shader.h"
+#include <iostream>
 
 SpriteRenderer* renderer;
 
@@ -25,6 +26,9 @@ void Game::Init()
     ResourceManager::GetShader("default").SetMatrix4("projection", projection);
     renderer = new SpriteRenderer((const Shader)ResourceManager::GetShader("default"));
     ResourceManager::LoadTexture("assets/testIcon.png", true, "icon");
+
+    this->map = {};
+    this->map.Load("assets/data/0.dat", this->width, this->height);
 }
 
 void Game::Update(float dt)
@@ -39,6 +43,8 @@ void Game::ProcessInput(float dt)
 
 void Game::Render()
 {
-    Texture2D icon = ResourceManager::GetTexture("icon");
-    renderer->DrawSprite(icon, glm::vec2(200.f, 200.f), glm::vec2(300.f, 400.f), 45.f, glm::vec3(1.f, 1.f, 1.f));
+    if(this->state == GAME_ACTIVE)
+    {
+        this->map.Draw(*renderer);
+    }
 }

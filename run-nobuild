@@ -1,2 +1,6 @@
 #!/bin/bash
-./"out/Space Exploration"
+rm run.log
+./"out/Space Exploration" &>> run.log
+if [ ! -s run.log ]
+then rm run.log
+fi
