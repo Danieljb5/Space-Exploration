@@ -1,87 +1,57 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include "game.h"
-#include "resourceManager.h"
+#include <SDL2/SDL.h>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
+#include "structs.h"
+#include "init.h"
+#include "renderer.h"
+#include "input.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+App app;
+Renderer renderer = {};
+Input input = {};
+Init init = {};
+Sprite player;
 
-unsigned int SCREEN_WIDTH = 1280;
-unsigned int SCREEN_HEIGHT = 720;
-
-Game game = {SCREEN_WIDTH, SCREEN_HEIGHT};
-
-int main(int argc, char* argv[])
+int main()
 {
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, false);
+    init.initSDL(&app);
+    renderer.init(&app, {255, 0, 0, 255});
+    
+    float dt, ct = SDL_GetTicks(), lt;
+    float timer;
+    int frames = 0;
 
-	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	SCREEN_WIDTH = mode->width;
-	SCREEN_HEIGHT = mode->height;
+    player.x = 100;
+    player.y = 100;
+    player.texture = renderer.loadTexture("assets/testIcon.png");
 
-	game = {SCREEN_WIDTH, SCREEN_HEIGHT};
-
-	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Space Exploration", glfwGetPrimaryMonitor(), nullptr);
-	glfwMakeContextCurrent(window);
-
-	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialise GLAD" << std::endl;
-		return -1;
-	}
-
-
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	game.Init();
-
-	float dt = 0.f;
-	float lastTime = 0.f;
-
-	while(!glfwWindowShouldClose(window))
-	{
-		float currentTime = glfwGetTime();
-		dt = currentTime - lastTime;
-		lastTime = currentTime;
-		glfwPollEvents();
-		game.ProcessInput(dt);
-		game.Update(dt);
-
-		glClearColor(0.f, 0.f, 0.f, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		game.Render();
-
-		glfwSwapBuffers(window);
-	}
-
-	ResourceManager::Clear();
-
-	glfwTerminate();
-	return 0;
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
-	if (key >= 0 && key < 1024)
+    while(1)
     {
-        if (action == GLFW_PRESS)
-            game.keys[key] = true;
-        else if (action == GLFW_RELEASE)
-            game.keys[key] = false;
-    }
-}
+        renderer.clear();
+        input.processInput();
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
+        renderer.blit(player);
+
+        lt = ct;
+        ct = SDL_GetTicks();
+        dt = (ct - lt) / 1000.0f;
+        float fps = 1.f / dt;
+        timer += dt;
+        frames++;
+
+        if(timer >= 1.0f)
+        {
+            if(fps >= 999)
+            {
+                fps = frames;
+            }
+            std::string title = {"Space Exploration | " + std::to_string((int)fps) + " FPS"};
+            SDL_SetWindowTitle(app.window, title.c_str());
+            timer = 0.0f;
+            frames = 0;
+        }
+
+        renderer.display();
+    }
 }
