@@ -2,8 +2,8 @@
 rm build.log
 SRCDIR=src
 SRCS=$(find $SRCDIR -name *.cpp)
-g++ -c $SRCS -I src -I src/headers -I lib/glad/include -I lib/glfw-3.3.4/include -I lib/glm -I lib/stb-master -w -lglfw -ldl -lglm -lSDL2 -g -Wall -Wextra -Werror -pedantic -fcheck=all &>> build.log
-g++ -O *.o lib/glad/glad.o -o "Space Exploration" -I src/source -I src/headers -I lib/glad/include -I lib/glfw-3.3.4/include -I lib/glm -I lib/stb-master -lglfw -ldl -lSDL2 -g -Wall -Wextra -Werror -pedantic -fcheck=all &>> build.log
+g++ -c $SRCS -I src -I src/headers -I /usr/include/SFML-w -ldl -g -Wall -Wextra -Werror -pedantic &>> build.log
+g++ -O *.o lib/glad/glad.o -o "Space Exploration" -I src/source -I src/headers -I /usr/include/SFML -lsfml-graphics -lsfml-window -lsfml-system -ldl -g -Wall -Wextra -Werror -pedantic &>> build.log
 mkdir -p out &>> build.log
 mv "Space Exploration" out &>> build.log
 rm *.o &>> build.log

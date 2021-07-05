@@ -1,5 +1,7 @@
 {
     "files.associations": {
+        "*.asm": "asm-intel-x86-generic",
+        "*.sc": "hlsl",
         "array": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -51,6 +53,17 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "bitset": "cpp",
+        "condition_variable": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "regex": "cpp",
+        "future": "cpp",
+        "mutex": "cpp",
+        "shared_mutex": "cpp",
+        "thread": "cpp",
+        "cfenv": "cpp",
+        "variant": "cpp"
     }
 }

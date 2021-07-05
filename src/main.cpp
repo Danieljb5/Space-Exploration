@@ -1,57 +1,30 @@
-#include <SDL2/SDL.h>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include "structs.h"
-#include "init.h"
-#include "renderer.h"
-#include "input.h"
-
-App app;
-Renderer renderer = {};
-Input input = {};
-Init init = {};
-Sprite player;
+#include <SFML/Graphics.hpp>
 
 int main()
 {
-    init.initSDL(&app);
-    renderer.init(&app, {255, 0, 0, 255});
-    
-    float dt, ct = SDL_GetTicks(), lt;
-    float timer;
-    int frames = 0;
+    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
 
-    player.x = 100;
-    player.y = 100;
-    player.texture = renderer.loadTexture("assets/testIcon.png");
+    sf::Texture texture;
+    if(!texture.loadFromFile("assets/testIcon.png"))
+        return -1;
+    texture.setSmooth(true);
 
-    while(1)
+    sf::Sprite sprite;
+    sprite.setTexture(texture);
+
+    while(window.isOpen())
     {
-        renderer.clear();
-        input.processInput();
-
-        renderer.blit(player);
-
-        lt = ct;
-        ct = SDL_GetTicks();
-        dt = (ct - lt) / 1000.0f;
-        float fps = 1.f / dt;
-        timer += dt;
-        frames++;
-
-        if(timer >= 1.0f)
+        sf::Event event;
+        while(window.pollEvent(event))
         {
-            if(fps >= 999)
-            {
-                fps = frames;
-            }
-            std::string title = {"Space Exploration | " + std::to_string((int)fps) + " FPS"};
-            SDL_SetWindowTitle(app.window, title.c_str());
-            timer = 0.0f;
-            frames = 0;
+            if(event.type == sf::Event::Closed)
+                window.close();
         }
 
-        renderer.display();
+        window.clear(sf::Color::Black);
+        window.draw(sprite);
+        window.display();
     }
+
+    return 0;
 }
